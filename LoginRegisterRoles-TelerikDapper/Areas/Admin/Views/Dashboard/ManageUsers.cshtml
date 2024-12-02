@@ -1,0 +1,52 @@
+﻿@using Kendo.Mvc.UI
+@using LoginRegisterRoles_TelerikDapper.Models
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<h1>Welcome Admin to Manage Users</h1>
+
+<h2>Kendo UI Grid</h2>
+
+@(Html.Kendo().Grid<User>()
+    .Name("grid")
+    .HtmlAttributes(new { style = "height:550px;" })
+    .Columns(columns =>
+    {
+        columns.Bound(c => c.UserId).Hidden(true); // Hidden ID column for internal use
+        columns.Bound(c => c.UserName).Width(100); // UserName column
+        columns.Bound(c => c.Email).Width(100); // Email column
+        columns.Bound(c => c.FirstName).Width(100); // First Name column
+        columns.Bound(c => c.LastName).Width(100); // Last Name column
+        columns.Bound(c => c.RoleName).Width(100); // Role Name column
+        columns.Command(command =>
+        {
+            command.Edit();
+            command.Destroy(); // Enable delete button
+        }).Width(200); // Edit and Delete buttons
+    })
+    .ToolBar(toolBar =>
+    {
+        toolBar.Create(); // Add create button in the toolbar
+    })
+    .Editable(editable => editable.Mode(GridEditMode.InLine)) // Enable inline editing
+    .Pageable(p => p.Enabled(true).Refresh(true)) // Pagination enabled with refresh button
+    .DataSource(dataSource => dataSource
+        .Ajax() // Enable Ajax for CRUD operations
+        .PageSize(20) // Page size
+        .ServerOperation(true) // Enable server-side operations for paging, sorting, etc.
+        .Model(model =>
+        {
+            model.Id(c => c.UserId); // Specify the ID field as the primary key
+            model.Field(c => c.UserName).Editable(true); // Allow editing UserName
+            model.Field(c => c.Email).Editable(true); // Allow editing Email
+            model.Field(c => c.FirstName).Editable(true); // Allow editing First Name
+            model.Field(c => c.LastName).Editable(true); // Allow editing Last Name
+            model.Field(c => c.RoleName).Editable(true); // Allow editing RoleName
+        })
+        .Read(read => read.Action("GetAllUsers", "Dashboard")) // Action to get data
+        .Create(create => create.Action("Create", "Dashboard")) // Action to create a new user
+        .Update(update => update.Action("Update", "Dashboard")) // Action to update a user
+        .Destroy(delete => delete.Action("Delete", "Dashboard")) // Action to delete a user
+    )
+)

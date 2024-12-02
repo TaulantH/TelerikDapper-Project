@@ -1,0 +1,112 @@
+﻿@using LoginRegisterRoles_TelerikDapper.Models
+@using Kendo.Mvc.UI
+@{
+}
+<div class="wrapper">
+    <div class="logo">
+        <img src="https://img.freepik.com/free-vector/flat-dental-care-concept-illustration_23-2149002069.jpg?semt=ais_hybrid" alt="">
+    </div>
+    <div class="text-center mt-4 name">
+        Create a new account
+    </div>
+    <div class="form-group">
+    @(Html.Kendo().Form<User>()
+        .Name("formExample")
+            .HtmlAttributes(new { action = "#", method = "POST" })
+        .Validatable(v =>
+        {
+            v.ValidateOnBlur(true);
+            v.ValidationSummary(vs => vs.Enable(true));
+            v.ErrorTemplate("<span class='k-form-error'>#:message#</span>");
+        })
+        .Items(items =>
+        {
+            items.AddGroup()
+            .Label("Registration Form")
+  
+            .Items(i =>
+          {
+                    i.Add().Field(f => f.FirstName).Label("First Name").InputHtmlAttributes(new { @class = "form-control" });
+                    i.Add().Field(f => f.LastName).Label("Last Name").InputHtmlAttributes(new { @class = "form-control" });
+                    i.Add().Field(f => f.UserName).Label("Username").InputHtmlAttributes(new { @class = "form-control" });
+                    i.Add().Field(f => f.Password).Label("Password").Hint("Hint: enter alphanumeric characters only.").InputHtmlAttributes(new { @class = "form-control" });
+                    i.Add().Field(f => f.ConfirmPassword).Label("Confirm Password").InputHtmlAttributes(new { @class = "form-control" });
+                    i.Add().Field(f => f.Email).Label("Email").InputHtmlAttributes(new { @class = "form-control" });
+                    i.Add().Field(f => f.DateOfBirth).Label("Date of Birth").InputHtmlAttributes(new { @class = "form-control" });
+                    i.Add().Field(f => f.Agree).Label("Agree to Terms?");
+                });
+        })
+        .Events(ev => ev.ValidateField("onValidateField").Submit("onFormSubmit").Clear("onFormClear"))
+        )
+        </div>
+</div>
+
+<style>
+ .wrapper{
+     display: grid;
+ }
+    .form-control {
+        display: block;
+        width: 100%;
+        padding: .375rem .75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 0px solid #ced4da;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border-radius: .25rem;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+    .k-button{
+        color:white;
+        background-color:black;
+    }
+</style>
+<script>
+    function onFormSubmit(e) {
+        e.preventDefault();
+        var form = e.sender;
+
+        // Validate the form
+        if (form.validate()) {
+            // Show success message
+            var validationSuccess = $("#validation-success");
+            validationSuccess.html("<div class='k-messagebox k-messagebox-success'>Form data is valid!</div>");
+
+            // Submit the form via AJAX
+            $.ajax({
+                url: 'User/Validation',  // Controller action URL
+                type: 'POST',
+                data: form.serialize(),  // Serialize the form data
+                success: function(response) {
+                    if (response.success) {
+                        validationSuccess.html("<div class='k-messagebox k-messagebox-success'>" + response.message + "</div>");
+                    } else {
+                        validationSuccess.html("<div class='k-messagebox k-messagebox-error'>" + response.message + "</div>");
+                    }
+                },
+                error: function() {
+                    validationSuccess.html("<div class='k-messagebox k-messagebox-error'>An error occurred while submitting the form.</div>");
+                }
+            });
+        } else {
+            var validationSuccess = $("#validation-success");
+            validationSuccess.html("<div class='k-messagebox k-messagebox-error'>Please fill out all required fields.</div>");
+        }
+    }
+
+    function onFormClear(ev) {
+        var validationSuccess = $("#validation-success");
+        validationSuccess.html("");
+    }
+
+    function onValidateField(ev){
+        var validationSuccess = $("#validation-success");
+        validationSuccess.html("");
+    }
+</script>

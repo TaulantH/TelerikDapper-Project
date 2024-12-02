@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LoginRegisterRoles_TelerikDapper</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="~/css/telerik/CBMS_Theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/LoginRegisterRoles_TelerikDapper.styles.css" asp-append-version="true" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="~/lib/telerik/kendo.all.min.js"></script>
+    <script src="~/lib/telerik/kendo.aspnetmvc.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <ul class="navbar-nav">
+            <li class="navbar__item">
+            <li class="navbar__item">
+                <a class="navbar__link" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house"></i><span>Home</span></a>
+                        </li>
+            <li class="navbar__item">
+                <a class="navbar__link" asp-area="" asp-controller="Home" asp-action="About"><i class="bi bi-info-circle"></i><span>About</span></a>
+                        </li>
+            <li class="navbar__item">
+                <a class="navbar__link" asp-area="" asp-controller="Home" asp-action="Contact"><i class="bi bi-envelope"></i><span>Contact</span></a>
+            </li>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+           
+                            @if (User.IsInRole("Admin"))
+                            {
+                    <li class="navbar__item">
+                        <a class="navbar__link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"> <i class="bi bi-speedometer2"></i><span>Admin Dashboard</span></a>
+                                </li>
+                    <li class="navbar__item">
+                        <a class="navbar__link" asp-area="Admin" asp-controller="Dashboard" asp-action="ManageUsers"><i class="bi bi-person-gear"></i><span>Manage User</span></a>
+                    </li>
+                            }
+                            @if (User.IsInRole("User"))
+                            {
+                    <li class="navbar__item">
+                        <a class="navbar__link" asp-area="User" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2"></i><span>User Dashboard</span></a>
+                                </li>
+                            }
+                <li class="navbar__item">
+                    <a class="navbar__link" asp-area="" asp-controller="User" asp-action="Logout"> <i class="bi bi-box-arrow-left"></i><span>Logout</span></a>
+                </li>
+                        }
+                        else
+                        {
+                <li class="navbar__item">
+                    <a class="navbar__link" asp-area="" asp-controller="Form" asp-action="Validation"> <i class="bi bi-person-add"></i><span>Register</span></a>
+                            </li>
+                <li class="navbar__item">
+                    <a class="navbar__link" asp-area="" asp-controller="User" asp-action="Login"> <i class="bi bi-people"></i><span>Login</span></a>
+                            </li>
+                        }
+
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @* <footer class="border-top footer text-muted"> *@
+    @*     <div class="container"> *@
+    @*         &copy; 2024 - LoginRegisterRoles_TelerikDapper - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@
+    @*     </div> *@
+    @* </footer> *@
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
