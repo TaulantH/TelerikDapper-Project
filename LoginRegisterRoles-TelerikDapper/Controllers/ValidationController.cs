@@ -51,7 +51,7 @@ namespace LoginRegisterRoles_TelerikDapper.Controllers
 				if (isInserted)
 				{
 					// Redirect to Dashboard after successful registration
-					return RedirectToAction("Index", "Dashboard", new { area = "User" });
+					return RedirectToAction("Login", "User");
 				}
 				else
 				{

@@ -1,11 +1,11 @@
 using LoginRegisterRoles_TelerikDapper.Repository;
 using Microsoft.Extensions.Configuration;
-using System.Data.SqlClient;
 using System.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.DependencyInjection;
 using LoginRegisterRoles_TelerikDapper;
 using Microsoft.Exchange.WebServices.Data;
+using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 

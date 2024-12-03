@@ -4,49 +4,42 @@
     ViewData["Title"] = "Manage Users";
 }
 
-<h1>Welcome Admin to Manage Users</h1>
-
-<h2>Kendo UI Grid</h2>
-
 @(Html.Kendo().Grid<User>()
     .Name("grid")
-    .HtmlAttributes(new { style = "height:550px;" })
+    .HtmlAttributes(new { style = "height: 550px; postion: static !important; margin: 10px; border-radius:10px; padding:10px;" })
     .Columns(columns =>
     {
-        columns.Bound(c => c.UserId).Hidden(true); // Hidden ID column for internal use
-        columns.Bound(c => c.UserName).Width(100); // UserName column
-        columns.Bound(c => c.Email).Width(100); // Email column
-        columns.Bound(c => c.FirstName).Width(100); // First Name column
-        columns.Bound(c => c.LastName).Width(100); // Last Name column
-        columns.Bound(c => c.RoleName).Width(100); // Role Name column
+        columns.Bound(c => c.UserId).Hidden(true);
+        columns.Bound(c => c.UserName).Width(100); 
+        columns.Bound(c => c.Email).Width(100);
+        columns.Bound(c => c.FirstName).Width(100); 
+        columns.Bound(c => c.LastName).Width(100); 
         columns.Command(command =>
         {
             command.Edit();
-            command.Destroy(); // Enable delete button
-        }).Width(200); // Edit and Delete buttons
+            command.Destroy(); 
+        }).Width(200); 
     })
     .ToolBar(toolBar =>
     {
-        toolBar.Create(); // Add create button in the toolbar
+        toolBar.Create(); 
     })
-    .Editable(editable => editable.Mode(GridEditMode.InLine)) // Enable inline editing
-    .Pageable(p => p.Enabled(true).Refresh(true)) // Pagination enabled with refresh button
+    .Editable(editable => editable.Mode(GridEditMode.InLine)) 
+    .Pageable(p => p.Enabled(true).Refresh(true)) 
     .DataSource(dataSource => dataSource
-        .Ajax() // Enable Ajax for CRUD operations
-        .PageSize(20) // Page size
-        .ServerOperation(true) // Enable server-side operations for paging, sorting, etc.
+        .Ajax() 
+        .PageSize(5) 
+        .ServerOperation(true) 
         .Model(model =>
         {
-            model.Id(c => c.UserId); // Specify the ID field as the primary key
-            model.Field(c => c.UserName).Editable(true); // Allow editing UserName
-            model.Field(c => c.Email).Editable(true); // Allow editing Email
-            model.Field(c => c.FirstName).Editable(true); // Allow editing First Name
-            model.Field(c => c.LastName).Editable(true); // Allow editing Last Name
-            model.Field(c => c.RoleName).Editable(true); // Allow editing RoleName
+            model.Id(c => c.UserId);
+            model.Field(c => c.UserName).Editable(true); 
+            model.Field(c => c.Email).Editable(true); 
+            model.Field(c => c.FirstName).Editable(true);
+            model.Field(c => c.LastName).Editable(true); 
         })
-        .Read(read => read.Action("GetAllUsers", "Dashboard")) // Action to get data
-        .Create(create => create.Action("Create", "Dashboard")) // Action to create a new user
-        .Update(update => update.Action("Update", "Dashboard")) // Action to update a user
-        .Destroy(delete => delete.Action("Delete", "Dashboard")) // Action to delete a user
+        .Read(read => read.Action("GetAllUsers", "Dashboard")) 
+        .Update(update => update.Action("Update", "Dashboard")) 
+        .Destroy(delete => delete.Action("Delete", "Dashboard")) 
     )
 )

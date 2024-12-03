@@ -6,14 +6,13 @@ using LoginRegisterRoles_TelerikDapper.Models;
 using Microsoft.Exchange.WebServices.Data;
 
 namespace LoginRegisterRoles_TelerikDapper
-{ 
+{
 	[Authorize(Roles = "Admin")]
 	[Area("Admin")]
 	public class DashboardController : Controller
 	{
 		private readonly AdminRepository _adminRepository;
 
-		// Constructor to inject AdminRepository
 		public DashboardController(AdminRepository adminRepository)
 		{
 			_adminRepository = adminRepository;
@@ -26,9 +25,7 @@ namespace LoginRegisterRoles_TelerikDapper
 
 		public IActionResult GetAllUsers([DataSourceRequest] DataSourceRequest request)
 		{
-			// Fetch the users from the repository
-			var users =  _adminRepository.GetAllUsers();
-			// Return the data in the required format
+			var users = _adminRepository.GetAllUsers();
 			return Json(users.ToDataSourceResult(request));
 		}
 
@@ -39,29 +36,23 @@ namespace LoginRegisterRoles_TelerikDapper
 		}
 
 		[HttpPost]
-		public IActionResult Create([DataSourceRequest] DataSourceRequest request, User user)
-		{
-			if (user != null && ModelState.IsValid)
-			{
-				// Call the repository to insert the user
-				var result = _adminRepository.Add(user);
-
-			}
-
-			return Json(new[] { user }.ToDataSourceResult(request, ModelState));
-		}
-
-
-		[HttpPost]
 		public IActionResult Update([DataSourceRequest] DataSourceRequest request, User user)
 		{
-			if (user != null && ModelState.IsValid)
+			if (user != null)
 			{
-				_adminRepository.Update(user);
+				try
+				{
+					_adminRepository.Update(user);
+				}
+				catch (Exception ex)
+				{
+					ModelState.AddModelError("", $"Error updating user: {ex.Message}");
+				}
 			}
-			return Json(new[] { user }.ToDataSourceResult(request, ModelState));
+			return Json(new[] { user }.ToDataSourceResult(request));
 		}
-		[HttpGet]
+
+		[HttpPost]
 		public IActionResult Delete([DataSourceRequest] DataSourceRequest request, User user)
 		{
 			if (user != null)

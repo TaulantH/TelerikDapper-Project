@@ -21,28 +21,33 @@ namespace LoginRegisterRoles_TelerikDapper
 		}
 		public IEnumerable<User> GetAllUsers()
 		{
-			var query = "SELECT u.FirstName, u.LastName, u.Username, u.Email, r.RoleName FROM Users u INNER JOIN Roles r ON u.RoleId = r.RoleId;";
-			return  _connection.Query<User>(query).ToList();
+			var query = "SELECT * FROM Users;";
+			return _connection.Query<User>(query).ToList();
 		}
 
 
-		public User Add(User user)
-		{
-			var sql = "INSERT INTO Users (Name, Email, Username, Password) VALUES (@Name, @Email, @Username, @Password);";
-			var id = _connection.Query<int>(sql, user).Single();
-			user.UserId = id;
-			return user;
-		}
+
 		public User Update(User user)
 		{
-			var sql = "UPDATE Users SET Name = @Name, Email = @Email, Username = @Username WHERE UserId = @UserId";
+			var sql = @"
+        UPDATE Users 
+        SET Username = @Username, 
+            Email = @Email, 
+            FirstName = @FirstName, 
+            LastName = @LastName
+        WHERE UserId = @UserId";
+
 			var affectedRows = _connection.Execute(sql, user);
+
+			// Log the number of affected rows for debugging
 			if (affectedRows == 0)
 			{
-				throw new Exception("No rows updated. The user might not exist.");
+				throw new Exception($"No rows updated for UserId: {user.UserId}. The user might not exist.");
 			}
+
 			return user;
 		}
+
 
 		public void Remove(int id)
 		{
