@@ -1,8 +1,6 @@
-﻿using LoginRegisterRoles_TelerikDapper.Models;
-using Dapper;
+﻿using Dapper;
+using LoginRegisterRoles_TelerikDapper.Models;
 using System.Data;
-using LoginRegisterRoles_TelerikDapper;
-using System.Numerics;
 
 namespace LoginRegisterRoles_TelerikDapper
 {
@@ -21,11 +19,17 @@ namespace LoginRegisterRoles_TelerikDapper
 		}
 		public IEnumerable<User> GetAllUsers()
 		{
-			var query = "SELECT * FROM Users;";
+			var query = @"
+        SELECT u.*, r.RoleName 
+        FROM Users u
+        INNER JOIN Roles r ON u.RoleId = r.RoleId;";
 			return _connection.Query<User>(query).ToList();
 		}
-
-
+		public IEnumerable<Role> GetAllRoles()
+		{
+			var query = "SELECT RoleId, RoleName FROM Roles";
+			return _connection.Query<Role>(query).ToList();
+		}
 
 		public User Update(User user)
 		{
@@ -34,8 +38,9 @@ namespace LoginRegisterRoles_TelerikDapper
         SET Username = @Username, 
             Email = @Email, 
             FirstName = @FirstName, 
-            LastName = @LastName
-        WHERE UserId = @UserId";
+            LastName = @LastName,
+			RoleId = @RoleId
+			WHERE UserId = @UserId";
 
 			var affectedRows = _connection.Execute(sql, user);
 

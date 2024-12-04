@@ -6,7 +6,7 @@
 
 @(Html.Kendo().Grid<User>()
     .Name("grid")
-    .HtmlAttributes(new { style = "height: 550px; postion: static !important; margin: 10px; border-radius:10px; padding:10px;" })
+    .HtmlAttributes(new { style = "height: 100%; width:100% postion: static !important; margin: 10px; border-radius:10px; padding:10px;" })
     .Columns(columns =>
     {
         columns.Bound(c => c.UserId).Hidden(true);
@@ -14,11 +14,15 @@
         columns.Bound(c => c.Email).Width(100);
         columns.Bound(c => c.FirstName).Width(100); 
         columns.Bound(c => c.LastName).Width(100); 
+        columns.ForeignKey(c => c.RoleId, (System.Collections.IEnumerable)ViewData["Roles"], "RoleId", "RoleName")
+               .Title("Role")
+               .Width(50);       
+               
         columns.Command(command =>
         {
             command.Edit();
             command.Destroy(); 
-        }).Width(200); 
+        }).Width(250); 
     })
     .ToolBar(toolBar =>
     {

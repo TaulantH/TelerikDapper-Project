@@ -38,19 +38,15 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddAuthorization(options =>
 {
-	// Define roles or policies if needed
 });
 
-// Add the repository services
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<AdminRepository>();
 
-// Add Kendo UI for Telerik
 builder.Services.AddKendo();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
 	app.UseExceptionHandler("/Home/Error");
@@ -63,10 +59,9 @@ app.UseRouting();
 
 // Ensure session is before authentication
 app.UseSession();
-app.UseAuthentication();  // Authentication middleware
-app.UseAuthorization();  // Authorization middleware
+app.UseAuthentication();  
+app.UseAuthorization();  
 
-// Configure routes
 app.MapControllerRoute(
 	name: "areas",
 	pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");

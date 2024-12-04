@@ -7,8 +7,10 @@ namespace LoginRegisterRoles_TelerikDapper
 	{
 		User Find(int id);
 		IEnumerable<User> GetAllUsers();
-	//User Add(User user);
-	User Update(User user);
+		IEnumerable<Role> GetAllRoles();
+
+		//User Add(User user);
+		User Update(User user);
 		void Remove(int id);
 		Task<int> GetByIdAsync(int userId);
 		Task SaveChangesAsync();

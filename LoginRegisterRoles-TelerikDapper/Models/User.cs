@@ -67,6 +67,6 @@ namespace LoginRegisterRoles_TelerikDapper.Models
 
 		public DateTime? DateOfBirth { get; set; }
 		public int RoleId { get; set; }
-
+		public string? RoleName { get; set; }  // Display Name
 	}
 }

@@ -4,6 +4,7 @@ using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
 using LoginRegisterRoles_TelerikDapper.Models;
 using Microsoft.Exchange.WebServices.Data;
+using System.Data;
 
 namespace LoginRegisterRoles_TelerikDapper
 {
@@ -28,11 +29,13 @@ namespace LoginRegisterRoles_TelerikDapper
 			var users = _adminRepository.GetAllUsers();
 			return Json(users.ToDataSourceResult(request));
 		}
-
 		public IActionResult ManageUsers()
 		{
+			var roles = _adminRepository.GetAllRoles();
+			ViewData["Roles"] = roles.Select(r => new { r.RoleId, r.RoleName }).ToList();
+
 			var users = _adminRepository.GetAllUsers();
-			return View(users); // Pass users to view
+			return View(users);
 		}
 
 		[HttpPost]
@@ -49,8 +52,9 @@ namespace LoginRegisterRoles_TelerikDapper
 					ModelState.AddModelError("", $"Error updating user: {ex.Message}");
 				}
 			}
-			return Json(new[] { user }.ToDataSourceResult(request));
+			return Json(new[] { user }.ToDataSourceResult(request, ModelState));
 		}
+
 
 		[HttpPost]
 		public IActionResult Delete([DataSourceRequest] DataSourceRequest request, User user)
