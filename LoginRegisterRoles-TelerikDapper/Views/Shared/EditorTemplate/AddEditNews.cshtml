@@ -1,0 +1,111 @@
+﻿@using Kendo.Mvc.UI
+@using LoginRegisterRoles_TelerikDapper.Models
+@model LoginRegisterRoles_TelerikDapper.Models.News
+<script>
+
+
+       function Success(e) {
+        var filePath = e.response.FileUrl;
+        if (filePath) {
+            $("#imagePreview").append('<img src="/Images/' + filePath + '" width="100" />');
+
+            var existingFiles = $("#Images").val();
+            var newFiles = existingFiles ? existingFiles + "," + filePath : filePath;
+            $("#Images").val(newFiles).trigger("change");
+        }
+    }
+</script>
+<div id="popup-editor">
+    <form id="popup-form" asp-action="CreateNews" enctype="multipart/form-data">
+        <input asp-for="Id" hidden />
+        <div class="form-group">
+            <label for="Title">Title</label>
+            @(Html.Kendo().TextBoxFor(model => model.Title).HtmlAttributes(new { @class = "form-control" }))
+        </div>
+
+        <div class="form-group">
+            <label for="Content">Content</label>
+            @(Html.Kendo().EditorFor(model => model.Content).HtmlAttributes(new { style = "height:400px" }))
+        </div>
+
+        <div class="form-group">
+            <label for="PublishDate">Publish Date</label>
+            @(Html.Kendo().DateTimePickerFor(model => model.PublishDate).HtmlAttributes(new { @class = "form-control" }))
+        </div>
+
+        <div class="form-group">
+            <label for="Location">Location</label>
+            @(Html.Kendo().TextBoxFor(model => model.Location).HtmlAttributes(new { @class = "form-control" }))
+        </div>
+
+        <div class="form-group">
+            <label for="Images">Upload Images</label>
+            @(Html.Kendo().Upload()
+                .Name("file") // Kendo expects the parameter to match this name
+                .Async(a => a
+                .SaveUrl(Url.Action("SaveFile", "News"))
+                .AutoUpload(true)
+                )
+                .Events(e => e.Success("Success")) // Attach a success event
+                .HtmlAttributes(new { @class = "form-control", accept = ".svg,.pdf,.jpeg,.jpg,.png,.webp" })
+                )
+            @Html.HiddenFor(t => t.Images)
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-secondary" onclick="closePopup()">Cancel</button>
+    </form>
+
+</div>
+
+
+<script>
+
+    // function openPopup() {
+    //     $("#popup-editor").kendoWindow({
+    //         title: "Create News",
+    //         width: "600px",
+    //         modal: true,
+    //         visible: false
+    //     }).data("kendoWindow").center().open();
+    // }
+
+    // function closePopup() {
+    //     $("#popup-editor").data("kendoWindow").close();
+    // }
+
+    //        $("#popup-form").on("submit", function (e) {
+    //     e.preventDefault();
+
+    //     var formData = new FormData(this);
+    //     formData.set('Images', $('#Images').val())
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "@Url.Action("CreateNews", "News")",
+    //         data: formData,
+    //         contentType: false,
+    //         processData: false,
+    //         success: function (response) {
+    //             if (response.success) {
+    //                 alert("News created successfully!");
+    //                 closePopup();
+    //                 $("#grid").data("kendoGrid").dataSource.read();
+    //             } else {
+    //                 alert("Error: " + response.message);
+    //             }
+    //         },
+    //         error: function () {
+    //             alert("An error occurred while creating the news.");
+    //         }
+    //     });
+    // });
+
+    // $(document).ready(function () {
+    //     $("#grid").on("click", ".k-grid-add", function (e) {
+    //         e.preventDefault();
+    //         openPopup();
+    //     });
+    // });
+
+
+</script>

@@ -1,0 +1,110 @@
+﻿@using Kendo.Mvc.UI
+@model LoginRegisterRoles_TelerikDapper.Models.News
+@{
+    Layout = null;
+}
+<script>
+
+        function Success(e) {
+        var filePath = e.response.FileUrl;
+      
+        $("#Images").val(filePath).trigger("change");
+    }
+</script>
+<div id="popup-editor">
+    <form id="popup-form" asp-action="CreateUpdateNews" enctype="multipart/form-data">
+      @Html.HiddenFor(i=>i.Id)
+        <div class="form-group">
+            <label for="Title">Title</label>
+            @(Html.Kendo().TextBoxFor(model => model.Title).HtmlAttributes(new { @class = "form-control" }))
+        </div>
+
+        <div class="form-group">
+            <label for="Content">Content</label>
+            @(Html.Kendo().EditorFor(model => model.Content).HtmlAttributes(new { style = "height:400px" }))
+        </div>
+
+        <div class="form-group">
+            <label for="PublishDate">Publish Date</label>
+            @(Html.Kendo().DateTimePickerFor(model => model.PublishDate).HtmlAttributes(new { @class = "form-control" }))
+        </div>
+
+        <div class="form-group">
+            <label for="Location">Location</label>
+            @(Html.Kendo().TextBoxFor(model => model.Location).HtmlAttributes(new { @class = "form-control" }))
+        </div>
+
+        <div class="form-group">
+            <label for="Images">Upload Images</label>
+            @(Html.Kendo().Upload()
+                .Name("file") // Kendo expects the parameter to match this name
+                .Async(a => a
+                .SaveUrl(Url.Action("SaveFile", "News"))
+                .AutoUpload(true)
+                )
+                .Events(e => e.Success("Success")) // Attach a success event
+                .HtmlAttributes(new { @class = "form-control", accept = ".svg,.pdf,.jpeg,.jpg,.png,.webp" })
+                )
+            @Html.HiddenFor(t => t.Images)
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-secondary" onclick="closePopup()">Cancel</button>
+    </form>
+
+</div>
+
+
+<script>
+
+
+
+    function closePopup() {
+         var addeditWindow = $("#addEditNews").data("kendoWindow");
+       addeditWindow.close();
+    }
+
+ $("#popup-form").on("submit", function (e) {
+    e.preventDefault();
+
+    var formData = new FormData(this);
+    formData.set('Images', $('#Images').val());
+
+    // Check if it's an update or create action based on Id
+    var isUpdate = $('#Id').val() && $('#Id').val() !== "0";
+
+    $.ajax({
+        type: "POST",
+        url: "@Url.Action("CreateUpdateNews", "News")",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            if (response.success) {
+                Swal.fire({
+                    title: "News",
+                    text: isUpdate ? "News updated successfully!" : "News created successfully!",
+                    icon: "success"
+                });
+                closePopup();
+                $("#gridNews").data("kendoGrid").dataSource.read();
+            } else {
+                alert("Error: " + response.message);
+            }
+        },
+        error: function () {
+            alert("An error occurred while processing the news.");
+        }
+    });
+});
+
+
+    $(document).ready(function () {
+        $("#grid").on("click", ".k-grid-add", function (e) {
+            e.preventDefault();
+            openPopup();
+        });
+    });
+
+
+</script>

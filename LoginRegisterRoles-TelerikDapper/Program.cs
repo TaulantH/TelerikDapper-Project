@@ -18,10 +18,9 @@ builder.Services.AddScoped<IDbConnection>(sp =>
 	new SqlConnection(builder.Configuration.GetConnectionString("LoginRegisterRole_TelerikDapperDb")));
 
 
-// Add session services
 builder.Services.AddSession(options =>
 {
-	options.IdleTimeout = TimeSpan.FromMinutes(30); // Adjust as needed
+	options.IdleTimeout = TimeSpan.FromMinutes(30); 
 	options.Cookie.HttpOnly = true;
 	options.Cookie.IsEssential = true;
 });
@@ -30,9 +29,9 @@ builder.Services.AddSession(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 	.AddCookie(options =>
 	{
-		options.LoginPath = "/User/Login"; // Redirect if not authenticated
-		options.AccessDeniedPath = "/Home/AccessDenied"; // Redirect if not authorized
-		options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Cookie expiration
+		options.LoginPath = "/User/Login";
+		options.AccessDeniedPath = "/Home/AccessDenied";
+		options.ExpireTimeSpan = TimeSpan.FromMinutes(300);
 	});
 
 
@@ -42,6 +41,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<AdminRepository>();
+builder.Services.AddScoped<NewsRepository>();
 
 builder.Services.AddKendo();
 

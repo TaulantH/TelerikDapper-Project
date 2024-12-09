@@ -1,0 +1,109 @@
+﻿@using Kendo.Mvc.UI
+@using LoginRegisterRoles_TelerikDapper.Models
+@model LoginRegisterRoles_TelerikDapper.Models.News
+
+@{
+    ViewData["Title"] = "News Management";
+}
+
+<h1 class="display-4">Manage News</h1>
+<script>
+        function addEditNews(e) {
+         let newsId = 0;
+         if (e) {
+             newsId = $("#gridNews").data("kendoGrid").dataItem($(e.currentTarget).closest("tr")).Id;
+         }
+         var w = $("#addEditNews").data("kendoWindow");
+         w.refresh({
+             url: '@Url.Action("AddEditNews", "News")' + '?newsId=' + newsId
+         });
+         w.open();
+    }
+        function onClose(e) {
+        $("#gridNews").data("kendoGrid").dataSource.read();
+
+        var addeditWindow = $("#addEditNews").data("kendoWindow");
+        addeditWindow.content("");
+    }
+</script>
+@(
+Html.Kendo().Grid<News>()
+    .Name("gridNews")
+    .HtmlAttributes(new { style = "height:500px; border-radiu: 15px, padding: " })
+    .Columns(columns =>
+    {
+        columns.Bound(c => c.Id).Hidden(true);
+        columns.Bound(c => c.Title).Width(100);
+        columns.Bound(c => c.Content).Width(100).Hidden(true);
+        columns.Bound(c => c.PublishDate).Width(100);
+        columns.Bound(c => c.Images).Title("Image").ClientTemplate("<img src='#=Images#' alt='Image' style='height:50px;' />").Width(100);
+        columns.Command(command =>
+        {
+            command.Custom("update").Click("addEditNews").Text("Edit").IconClass("k-icon k-i-edit").HtmlAttributes(new { @id = "edit", style = "color: rgba(68, 84, 105, 0.87);background:transparent;" });
+            command.Destroy();
+        }).Width(200);
+    })
+    .ToolBar(toolbar => toolbar.Custom().Name("create-new").IconClass("k-icon k-i-add").HtmlAttributes(new { onClick = "addEditNews()" }).Text("Add"))
+    .Editable(editable => editable.Mode(GridEditMode.PopUp).DisplayDeleteConfirmation(false))
+    .Pageable(p => p.Enabled(true).Refresh(true))
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(10)
+        .ServerOperation(true)
+        .Model(model =>
+        {
+            model.Id(c => c.Id);
+            model.Field(c => c.Title).Editable(true);
+            model.Field(c => c.Content).Editable(true);
+            model.Field(c => c.PublishDate).Editable(true);
+            model.Field(c => c.Images).Editable(true);
+        })
+        .Read(read => read.Action("GetAll", "News"))
+        .Destroy(delete => delete.Action("Delete", "News"))
+        .Events(events => events
+            .RequestEnd("onRequestEnd") // Event to handle successful actions
+            .Error("onError") // Event to handle errors
+        )
+    )
+)
+
+<script>
+    function onRequestEnd(e) {
+        if (e.type === "destroy") {
+              Swal.fire({
+              title: "Are you sure?",
+              text: "You won't be able to revert this!",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+              if (result.isConfirmed) {
+                Swal.fire({
+                  title: "Deleted!",
+                  text: "Your file has been deleted.",
+                  icon: "success"
+                });
+              }
+            });
+        } 
+    }
+
+    function onError(e) {
+        alert("An error occurred while processing your request: " + e.xhr.responseText);
+    }
+</script>
+@(Html.Kendo().Window()
+    .Name("addEditNews")
+    .Content(@<text> </text>)
+    .Draggable()
+    .Resizable()
+    .Position(p => p.Top("10%").Left("10%"))
+    .Width("80%")
+    .Visible(false)
+    .Modal(true)
+    .Actions(actions => actions.Close())
+    .Events(ev => ev.Close("onClose"))
+    )

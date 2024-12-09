@@ -5,6 +5,7 @@ using Kendo.Mvc.Extensions;
 using LoginRegisterRoles_TelerikDapper.Models;
 using Microsoft.Exchange.WebServices.Data;
 using System.Data;
+using NuGet.Protocol.Core.Types;
 
 namespace LoginRegisterRoles_TelerikDapper
 {
@@ -29,6 +30,8 @@ namespace LoginRegisterRoles_TelerikDapper
 			var users = _adminRepository.GetAllUsers();
 			return Json(users.ToDataSourceResult(request));
 		}
+
+
 		public IActionResult ManageUsers()
 		{
 			var roles = _adminRepository.GetAllRoles();
@@ -37,6 +40,7 @@ namespace LoginRegisterRoles_TelerikDapper
 			var users = _adminRepository.GetAllUsers();
 			return View(users);
 		}
+
 
 		[HttpPost]
 		public IActionResult Update([DataSourceRequest] DataSourceRequest request, User user)

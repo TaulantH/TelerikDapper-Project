@@ -1,0 +1,32 @@
+﻿@using Kendo.Mvc.UI
+@{
+}
+<h1>Welcome Admin</h1>
+@model LoginRegisterRoles_TelerikDapper.Models.News
+
+<form asp-action="CreateNews" method="post" enctype="multipart/form-data">
+    <div>
+        <label>Title</label>
+        <input type="text" name="Title" class="form-control" />
+    </div>
+    <div>
+        <label>Content</label>
+        @(Html.Kendo().Editor()
+            .Name("Content")
+            .HtmlAttributes(new { style = "height:400px" })
+            )
+    </div>
+    <div>
+        <label>Publish Date</label>
+        <input type="datetime-local" name="PublishDate" class="form-control" />
+    </div>
+    <div>
+        <label>Location</label>
+        <input type="text" name="Location" class="form-control" />
+    </div>
+    <div>
+        <label>Upload Images</label>
+        <input type="file" name="Images" multiple class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

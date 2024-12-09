@@ -40,6 +40,9 @@
                     <li class="navbar__item">
                         <a class="navbar__link" asp-area="Admin" asp-controller="Dashboard" asp-action="ManageUsers"><i class="bi bi-person-gear"></i><span>Manage User</span></a>
                     </li>
+                    <li class="navbar__item">
+                        <a class="navbar__link" asp-area="Admin" asp-controller="News" asp-action="Index"><i class="bi bi-newspaper"></i><span>Manage News</span></a>
+                    </li>
                             }
                             @if (User.IsInRole("User"))
                             {
