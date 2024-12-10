@@ -6,7 +6,7 @@
 <script>
 
         function Success(e) {
-        var filePath = e.response.FileUrl;
+        var filePath = e.response.FileUrl; 
       
         $("#Images").val(filePath).trigger("change");
     }
@@ -21,7 +21,7 @@
 
         <div class="form-group">
             <label for="Content">Content</label>
-            @(Html.Kendo().EditorFor(model => model.Content).HtmlAttributes(new { style = "height:400px" }))
+            @(Html.Kendo().EditorFor(model => model.Content).HtmlAttributes(new { style = "height:300px" }))
         </div>
 
         <div class="form-group">
@@ -47,7 +47,6 @@
                 )
             @Html.HiddenFor(t => t.Images)
         </div>
-
         <button type="submit" class="btn btn-primary">Submit</button>
         <button type="button" class="btn btn-secondary" onclick="closePopup()">Cancel</button>
     </form>

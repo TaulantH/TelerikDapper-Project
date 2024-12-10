@@ -1,50 +1,32 @@
 ﻿@using Kendo.Mvc.UI
 @using LoginRegisterRoles_TelerikDapper.Models
-@model LoginRegisterRoles_TelerikDapper.Models.News
+@model LoginRegisterRoles_TelerikDapper.Models.FAQ
 
 @{
     ViewData["Title"] = "News Management";
 }
 
-<h5 class="title-manage">Manage News</h5>
-<script>
-        function addEditNews(e) {
-         let newsId = 0;
-         if (e) {
-             newsId = $("#gridNews").data("kendoGrid").dataItem($(e.currentTarget).closest("tr")).Id;
-         }
-         var w = $("#addEditNews").data("kendoWindow");
-         w.refresh({
-             url: '@Url.Action("AddEditNews", "News")' + '?newsId=' + newsId
-         });
-         w.open();
-    }
-        function onClose(e) {
-        $("#gridNews").data("kendoGrid").dataSource.read();
+<h5 class="title-manage">Manage Faq</h5>
 
-        var addeditWindow = $("#addEditNews").data("kendoWindow");
-        addeditWindow.content("");
-    }
-</script>
 @(
-Html.Kendo().Grid<News>()
-    .Name("gridNews")
+Html.Kendo().Grid<FAQ>()
+    .Name("gridFaq")
     .HtmlAttributes(new { style = "height:500px;position: static; border-radiu: 15px; padding: 20px; " })
     .Columns(columns =>
     {
         columns.Bound(c => c.Id).Hidden(true);
-        columns.Bound(c => c.Title).Width(100);
-        columns.Bound(c => c.Content).Width(100).Hidden(true);
-        columns.Bound(c => c.PublishDate).Width(100);
-        columns.Bound(c => c.Images).Title("Image").ClientTemplate("<img src='#=Images#' alt='Image' style='height:50px;' />").Width(100);
+        columns.Bound(c => c.Question).Width(100);
+        columns.Bound(c => c.Answer).Width(100);
         columns.Command(command =>
         {
-            command.Custom("update").Click("addEditNews").Text("Edit").IconClass("k-icon k-i-edit").HtmlAttributes(new { @id = "edit", style = "color: rgba(68, 84, 105, 0.87);background:transparent;" });
-            command.Destroy();
+            columns.Command(command => { command.Edit(); command.Destroy(); }).Width(300);
         }).Width(200);
     })
-    .ToolBar(toolbar => toolbar.Custom().Name("create-new").IconClass("k-icon k-i-add").HtmlAttributes(new { onClick = "addEditNews()" }).Text("Add"))
-    .Editable(editable => editable.Mode(GridEditMode.PopUp).DisplayDeleteConfirmation(false))
+    .ToolBar(toolbar => 
+    {
+        toolbar.Create().IconClass("k-icon k-i-add");
+    })
+    .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("AddEditFAQ"))
     .Pageable(p => p.Enabled(true).Refresh(true))
     .Scrollable()
     .DataSource(dataSource => dataSource
@@ -54,13 +36,14 @@ Html.Kendo().Grid<News>()
         .Model(model =>
         {
             model.Id(c => c.Id);
-            model.Field(c => c.Title).Editable(true);
-            model.Field(c => c.Content).Editable(true);
-            model.Field(c => c.PublishDate).Editable(true);
-            model.Field(c => c.Images).Editable(true);
+            model.Field(c => c.Question).Editable(true);
+            model.Field(c => c.Answer).Editable(true);
+
         })
-        .Read(read => read.Action("GetAll", "News"))
-        .Destroy(delete => delete.Action("Delete", "News"))
+        .Read(read => read.Action("GetAllFaq", "FAQ"))
+        .Create(create => create.Action("CreateUpdateFaq", "FAQ"))
+        .Update(update => update.Action("CreateUpdateFaq", "FAQ"))
+        .Destroy(delete => delete.Action("Delete", "FAQ"))
         .Events(events => events
             .RequestEnd("onRequestEnd") // Event to handle successful actions
             .Error("onError") // Event to handle errors
@@ -96,7 +79,7 @@ Html.Kendo().Grid<News>()
     }
 </script>
 @(Html.Kendo().Window()
-    .Name("addEditNews")
+    .Name("AddEditFAQ")
     .Content(@<text> </text>)
     .Draggable()
     .Resizable()

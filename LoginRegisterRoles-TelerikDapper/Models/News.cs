@@ -12,4 +12,6 @@ namespace LoginRegisterRoles_TelerikDapper.Models
 
 		public string Images { get; set; }
 	}
+
+
 }

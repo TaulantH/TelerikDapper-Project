@@ -1,7 +1,194 @@
-﻿@{
+﻿@model LoginRegisterRoles_TelerikDapper.Models.ViewModel.FaqNewsModel
+
+
+
+@{
     ViewData["Title"] = "Home Page";
 }
+<div class="container">
+    <h1 style="text-align:center;">News</h1>
+    <div class="row">
+        @if (Model != null && Model.News.Any())
+        {
+            foreach (var newsItem in Model.News)
+            {
+                <div class="col-md-4 col-sm-8">
+                    <div class="card mb-4">
+                        <img src="@Url.Content(newsItem.Images)" class="card-img-top" alt="@newsItem.Title" />
+                        <div class="card-body">
+                            <h5 class="card-title">@newsItem.Title</h5>
+                            <div class="description-content">
+                                @Html.Raw(newsItem.Content)
+                            </div>
+                            <p class="text-muted"><small>Published on: @newsItem.PublishDate</small></p>
+                            <a href="@Url.Action("Details", "Home", new { id = newsItem.Id })" class="btn btn-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No news available.</p>
+        }
+    </div>
 
-<div class="text-center">
-    <img src="https://al.spitaliamerikan.com/wp-content/uploads/2017/11/sak-870x350.jpg" width="100%" style="border-radius:15px" alt="Alternate Text" />
+    <div class="faq-container" >
+        <h1 style="text-align: center; ">Pyetjet e Shpeshta</h1>
+        @if (Model.FAQs != null && Model.FAQs.Any())
+        {
+            foreach (var faq in Model.FAQs) // Access FAQs via Item2
+            {
+                <div class="faq-item">
+                    <div class="faq-question">
+                        @faq.Question
+                        <span class="arrow">▶</span>
+                    </div>
+                    <div class="faq-answer">
+                        @faq.Answer
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No FAQs available.</p>
+        }
+    </div>
 </div>
+
+
+
+
+<style>
+    .container {
+        margin-top: 10px !important;
+    }
+
+    /* Styling for the cards */
+    .card {
+        display: flex;
+        padding: 5px;
+        border-radius: 10px;
+        box-shadow: 5px 5px 2px 1px #E8EAE5;
+        flex-direction: column;
+        height:400px;
+        justify-content: space-between;
+    }
+    .card-body{
+        padding-top:10px;
+    }
+    .card-img-top {
+        object-fit: cover;
+        height: 200px;
+        width: 100%;
+        border-radius: 10px;
+    }
+
+    .description-content {
+        overflow: hidden;
+        max-height: 3.5em; 
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        position: relative;
+        margin:0;
+    }
+
+        .description-content::after {
+            content: '...';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #fff;
+        }
+        h2{
+            font-size: 18px !important;
+        }
+        div{
+        margin: 0 !important;}
+
+    .faq-container {
+        width: 100%;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 15px;
+        overflow: hidden;
+    }
+
+    .faq-item {
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+    .faq-question {
+        padding: 20px;
+        font-size: 16px;
+        font-weight: 500;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        background-color: #f1f3f5;
+        transition: background-color 0.3s ease;
+    }
+
+        .faq-question:hover {
+            background-color: #e9ecef;
+        }
+
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        padding: 0 20px;
+        background-color: #ffffff;
+        color: #6c757d;
+        font-size: 14px;
+        line-height: 1.6;
+        transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+
+        .faq-answer.open {
+            max-height: 200px; /* Adjust for longer answers */
+            padding: 15px 20px;
+        }
+
+    .arrow {
+        font-size: 18px;
+        transition: transform 0.3s ease;
+    }
+
+        .arrow.open {
+            transform: rotate(90deg);
+        }
+
+ 
+</style>
+
+
+
+<script>
+      const faqItems = document.querySelectorAll('.faq-item');
+
+    faqItems.forEach(item => {
+      const question = item.querySelector('.faq-question');
+      const answer = item.querySelector('.faq-answer');
+      const arrow = item.querySelector('.arrow');
+
+      question.addEventListener('click', () => {
+        const isOpen = answer.classList.contains('open');
+
+        document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+        document.querySelectorAll('.arrow').forEach(a => a.classList.remove('open'));
+
+        if (!isOpen) {
+          answer.classList.add('open');
+          arrow.classList.add('open');
+        }
+      });
+    });
+</script>

@@ -2,27 +2,54 @@ using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using Microsoft.AspNetCore.Http;
+using Kendo.Mvc.UI;
+using NuGet.Protocol.Core.Types;
+using LoginRegisterRoles_TelerikDapper.Repository;
+using Kendo.Mvc.Extensions;
+using LoginRegisterRoles_TelerikDapper.Areas.Admin.Repository;
+using LoginRegisterRoles_TelerikDapper.Models.ViewModel;
 
 public class HomeController : Controller
 {
 	private readonly IDbConnection _dbConnection;
+	private readonly NewsRepository _repository;
+	private readonly FAQRepository _faqRepository;
+
 
 	// Injecting the database connection through constructor
-	public HomeController(IDbConnection dbConnection)
+	public HomeController(IDbConnection dbConnection, NewsRepository repository, FAQRepository faQRepository)
 	{
-		_dbConnection = dbConnection;
+
+	_dbConnection = dbConnection;
+		_repository = repository;
+		_faqRepository = faQRepository;
 	}
 
 	public IActionResult Index()
 	{
-		// Fetch the user's role dynamically
 		string userRole = GetUserRole();
+		var news = _repository.GetNews();
+		var faqs = _faqRepository.GetFaq();
 
-		// Pass the role information to the view
+		var model = new FaqNewsModel()
+		{
+			News = news,
+			FAQs = faqs
+		};
+
 		ViewData["UserRole"] = userRole;
-
-		return View();
+		return View(model); 
 	}
+
+
+	public IActionResult GetAll([DataSourceRequest] DataSourceRequest request)
+	{
+		var news = _repository.GetNews();
+				var faqs = _faqRepository.GetFaq();
+
+		return Json(news.ToDataSourceResult(request));
+	}
+
 	public IActionResult About()
 	{
 
@@ -36,35 +63,46 @@ public class HomeController : Controller
 		return View();
 	}
 
+	public IActionResult Details(int id)
+	{
+		var newsItem = _repository.FindById(id).FirstOrDefault();
+		if (newsItem == null)
+		{
+			return NotFound();
+		}
+
+		var otherNews = _repository.GetNews().Where(n => n.Id != id).Take(5);
+
+		ViewBag.OtherNews = otherNews;
+
+		return View(newsItem);
+	}
+
+
 
 	private string GetUserRole()
 	{
 		try
 		{
-			// Get the logged-in user's ID from the session or authentication
 			var userId = HttpContext.Session.GetString("UserId");
 
-			// Check if userId exists, if not return a default or error message
 			if (string.IsNullOrEmpty(userId))
 			{
 				return "No user logged in.";
 			}
 
-			// Modified query to get the role name directly from Users and Roles
 			string query = @"
             SELECT r.RoleName
             FROM Users u
             INNER JOIN Roles r ON u.RoleId = r.RoleId
             WHERE u.UserId = @UserId";
 
-			// Execute query to get the role name
 			var role = _dbConnection.QuerySingleOrDefault<string>(query, new { UserId = userId });
 
-			return role ?? "No role assigned."; // Return a default message if no role is found
+			return role ?? "No role assigned.";
 		}
 		catch (Exception ex)
 		{
-			// Log the exception or handle it accordingly
 			return $"Error fetching role: {ex.Message}";
 		}
 	}

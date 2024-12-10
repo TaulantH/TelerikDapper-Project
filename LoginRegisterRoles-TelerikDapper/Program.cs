@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using LoginRegisterRoles_TelerikDapper;
 using Microsoft.Exchange.WebServices.Data;
 using Microsoft.Data.SqlClient;
+using LoginRegisterRoles_TelerikDapper.Areas.Admin.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,8 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<AdminRepository>();
 builder.Services.AddScoped<NewsRepository>();
+builder.Services.AddScoped<FAQRepository>();
+
 
 builder.Services.AddKendo();
 

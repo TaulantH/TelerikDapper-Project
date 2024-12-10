@@ -21,13 +21,13 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%; /* Full viewport height */
-    margin: 0; /* Remove default margin */
-    background-color: #f8f9fa; /* Optional background color */
+    height: 100%; 
+    margin: 0; 
+    background-color: #f8f9fa; 
 }
 
 .wrapper {
-    position: relative; /* Change from fixed to relative for flexibility */
+    position: relative;
     max-width: 450px;
     min-height: 450px;
     padding: 20px 30px 0px 30px;
@@ -36,7 +36,6 @@ body {
     box-shadow: 13px 13px 20px #cbced1, -13px -13px 20px #fff;
 }
 
-/* Global Variables */
 :root {
     --border-radius: 10px;
     --spacer: 1rem;
@@ -47,22 +46,20 @@ body {
     --transition: var(--timing) ease all;
 }
 
-/* Google Font Import */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap');
 
-/* Body Styling */
 body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Full viewport height */
-    margin: 0; /* Remove default margin */
-    background-color: #f5f5f5; /* Optional background color */
+    min-height: 100vh; 
+    margin: 0;
+    background-color: #f5f5f5; 
 }
-/* Navbar Styling */
 .navbar {
     position: fixed;
     top: var(--spacer);
+    z-index: 1000 !important;
     left: var(--spacer);
     background: #fff;
     border-radius: var(--border-radius);
@@ -162,9 +159,11 @@ body {
         transform: scale(1, 1);
     }
 }
-
+.title-manage{
+    text-align:center;
+    font-size: 28px
+}
 /* Repeat the gooey effect keyframes for 12 iterations (gooeyEffect-3, gooeyEffect-4, ..., gooeyEffect-12) */
-
 .navbar__item:first-child:nth-last-child(1),
 .navbar__item:first-child:nth-last-child(1) ~ li {
     position: relative;
